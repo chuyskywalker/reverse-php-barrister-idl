@@ -103,7 +103,7 @@ function processInterface($entity) {
             $codeStr .= "$" . $param->name . ", ";
         }
         // clear last param
-        if (count($entity->functions)) {
+        if (count($function->params)) {
             $codeStr = substr($codeStr, 0, -2);
         }
         $codeStr .= ") {}\n\n";
