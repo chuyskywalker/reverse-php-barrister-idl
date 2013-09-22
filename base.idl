@@ -1,0 +1,79 @@
+
+// Category list
+enum PageCategory {
+    local
+    world
+    sports
+    business
+}
+
+// Basic entities for Content items
+struct Entity {
+
+    // The entity ID
+    id           string
+
+    // Unix timestamp to be populated at creation
+    createdTime  int
+
+    // At every edit, mark this with the current unixtimestamp
+    updatedTime  int
+
+    // how many times has this entity been changed
+    // Multi line is silly
+    version      int
+}
+
+// Page structure comment
+struct Page extends Entity {
+    authorId        string
+    publishTime     int           [optional]
+    title           string
+    // body element comment
+    body            string
+    category        PageCategory
+    tags            []string      [optional]
+}
+
+
+// Manage Page Content on site
+interface Content {
+
+    // Add a new page to the system.
+    //
+    // createdTime, updatedTime, version, and id are automatically set upon creation.
+    //
+    // Returns The generated page id
+    addPage(authorId string, title string, body string, category PageCategory) string
+
+    // Update the given page if possible
+    //
+    // Raises error code 30 if page.version is out of date
+    // Raises error code 40 if no page exists with the given page.id
+    //
+    // Returns The version of the revised page
+    updatePage(page Page) int
+
+    // Deletes the page as long as the version passed is current
+    //
+    // Throws error code 30 if version is out of date
+    //
+    // Returns True if page deleted, false if page did not exist
+    deletePage(id string, version int) bool
+
+    // Force deletes a list of pages
+    //
+    // Returns The pages which were actually found and deleted
+    forceDeletePages(id []string) []string
+
+    // Fetch a page
+    //
+    // Returns The page, if it exists, or null
+    getPage(id string) Page [optional]
+
+    // Fetch a page, more consistent interface
+    //
+    // Returns A list with 1 Page item if found, otherwise an empty list
+    betterGetPage(id string) []Page
+
+}
